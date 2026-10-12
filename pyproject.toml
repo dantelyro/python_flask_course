@@ -1,0 +1,19 @@
+[project]
+name = "python-flask-course"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "dantelyro", email = "beyondmind9@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "flask==2.3.0",
+    "flask-sqlalchemy==3.1.1",
+    "flask-cors==3.0.10",
+    "werkzeug==2.3.0"
+]
+
+[tool.uv]
+python-preference = "only-system"
+python-downloads = "never"
