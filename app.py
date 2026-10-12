@@ -5,62 +5,71 @@ from models.task import Task
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def hello_world():
-  return "Hello world"
+    return "Hello world"
+
 
 tasks = []
 task_id_control = 1
 
+
 @app.route('/tasks', methods=['POST'])
 def create_task():
-  global task_id_control
-  data = request.get_json()
-  new_task = Task(id=task_id_control, title=data['title'], description=data.get('description', '',))
-  task_id_control += 1
-  tasks.append(new_task)
-  return jsonify({"message": "nova tarefa criada com sucesso"})
+    global task_id_control
+    data = request.get_json()
+    new_task = Task(id=task_id_control, title=data['title'], description=data.get(
+        'description', '',))
+    task_id_control += 1
+    tasks.append(new_task)
+    return jsonify({"message": "nova tarefa criada com sucesso"})
+
 
 @app.route('/tasks', methods=['GET'])
 def list_tasks():
-  task_list = [task.to_dict() for task in tasks]
-  return jsonify({ "tasks": task_list, "total": len(task_list) })
+    task_list = [task.to_dict() for task in tasks]
+    return jsonify({"tasks": task_list, "total": len(task_list)})
+
 
 @app.route('/task/<int:id>', methods=['GET'])
 def get_task(id):
-  task = next((task.to_dict() for task in tasks if task.id == id), None)
+    task = next((task.to_dict() for task in tasks if task.id == id), None)
 
-  if task is None:
-    return jsonify({"message": "Not found"}), 404
+    if task is None:
+        return jsonify({"message": "Not found"}), 404
 
-  return jsonify({ "task": task })
+    return jsonify({"task": task})
+
 
 @app.route('/task/<int:id>', methods=['PUT'])
 def update(id):
-  task = next((task for task in tasks if task.id == id), None)
+    task = next((task for task in tasks if task.id == id), None)
 
-  if task is None:
-    return jsonify({"message": "Not found"}), 404
+    if task is None:
+        return jsonify({"message": "Not found"}), 404
 
-  data = request.get_json()
+    data = request.get_json()
 
-  print(data)
-  task.title = data["title"]
-  task.description = data['description']
-  task.completed = data['completed']
+    print(data)
+    task.title = data["title"]
+    task.description = data['description']
+    task.completed = data['completed']
 
-  return jsonify({ "task": "task updated!" })
+    return jsonify({"task": "task updated!"})
+
 
 @app.route('/task/<int:id>', methods=['DELETE'])
 def delete(id):
-  task = next((task for task in tasks if task.id == id), None)
+    task = next((task for task in tasks if task.id == id), None)
 
-  if task is None:
-    return jsonify({"message": "Not found"}), 404
+    if task is None:
+        return jsonify({"message": "Not found"}), 404
 
-  tasks.remove(task)
+    tasks.remove(task)
 
-  return jsonify({ "task": "task deleted!" })
+    return jsonify({"task": "task deleted!"})
+
 
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=True)
