@@ -31,16 +31,16 @@ def get_task(id):
   task = next((task.to_dict() for task in tasks if task.id == id), None)
 
   if task is None:
-    return jsonify({"message": "Not found"})
+    return jsonify({"message": "Not found"}), 404
 
-  return jsonify({ "task": task }), 404
+  return jsonify({ "task": task })
 
 @app.route('/task/<int:id>', methods=['PUT'])
 def update(id):
   task = next((task for task in tasks if task.id == id), None)
 
   if task is None:
-    return jsonify({"message": "Not found"})
+    return jsonify({"message": "Not found"}), 404
 
   data = request.get_json()
 
@@ -49,7 +49,18 @@ def update(id):
   task.description = data['description']
   task.completed = data['completed']
 
-  return jsonify({ "task": "task updated!" }), 404
+  return jsonify({ "task": "task updated!" })
+
+@app.route('/task/<int:id>', methods=['DELETE'])
+def delete(id):
+  task = next((task for task in tasks if task.id == id), None)
+
+  if task is None:
+    return jsonify({"message": "Not found"}), 404
+
+  tasks.remove(task)
+
+  return jsonify({ "task": "task deleted!" })
 
 if __name__ == "__main__":
   app.run(debug=True)
