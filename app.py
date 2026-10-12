@@ -15,15 +15,18 @@ tasks = []
 task_id_control = 1
 
 
-@app.route('/tasks', methods=['POST'])
+@app.route('/task', methods=['POST'])
 def create_task():
     global task_id_control
+    id = task_id_control
     data = request.get_json()
-    new_task = Task(id=task_id_control, title=data['title'], description=data.get(
-        'description', '',))
+    new_task = Task(id=id,
+                    title=data['title'],
+                    description=data['description']
+                    )
     task_id_control += 1
     tasks.append(new_task)
-    return jsonify({"message": "nova tarefa criada com sucesso"})
+    return jsonify({"message": "nova tarefa criada com sucesso", "id": id})
 
 
 @app.route('/tasks', methods=['GET'])
@@ -50,13 +53,11 @@ def update(id):
         return jsonify({"message": "Not found"}), 404
 
     data = request.get_json()
-
-    print(data)
     task.title = data["title"]
     task.description = data['description']
     task.completed = data['completed']
 
-    return jsonify({"task": "task updated!"})
+    return jsonify({"message": "task updated!"})
 
 
 @app.route('/task/<int:id>', methods=['DELETE'])
@@ -68,7 +69,7 @@ def delete(id):
 
     tasks.remove(task)
 
-    return jsonify({"task": "task deleted!"})
+    return jsonify({"message": "task deleted!"})
 
 
 if __name__ == "__main__":
